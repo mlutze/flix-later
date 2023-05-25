@@ -34,7 +34,7 @@ mod Later {
             ImpureLazy(unchecked_cast(ref Value.Todo(f) @ Static as _ \ Pure))
         }
 
-        pub def internalGet(l: ImpureLazy[ef, a]): a \ IO = match extract(l) {
+        def internalGet(l: ImpureLazy[ef, a]): a \ IO = match extract(l) {
             case Value.Todo(f) => 
                 let newVal = f();
                 inject(newVal, l);
@@ -47,6 +47,10 @@ mod Later {
 
         pub def map(f: a -> b \ efF, l: ImpureLazy[efL, a]): ImpureLazy[efF + efL, b] = {
             fromFunction(() -> f(get(l)))
+        }
+
+        pub def eq(l1: ImpureLazy[ef1, a], l2: ImpureLazy[ef2, a]): Bool \ {ef1, ef2} with Eq[a] = {
+            get(l1) == get(l2)
         }
     }
 }
