@@ -24,6 +24,18 @@ mod Later {
             ImpureLazyList(Later.ImpureLazy.fromFunction(getList))
         }
 
+        pub def toIterator(rc: Region[r], l: ImpureLazyList[ef, a]): Iterator[a, ef, r] \ r = {
+            let lRef = ref l @ rc; 
+            def next() = match uncons(l) {
+                case None => Iterator.Step.Done
+                case Some((hd, tl)) => {
+                    lRef := tl;
+                    Iterator.Step.Ans(hd)
+                }
+            };
+            Iterator.Iterator(rc, next)
+        }
+
         pub def map(f: a -> b \ efF, l: ImpureLazyList[efL, a]): ImpureLazyList[efF + efL, b] = {
             def getList() = match getValue(l) {
                 case Node.ImpureNil => Node.ImpureNil
