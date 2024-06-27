@@ -19,25 +19,25 @@ mod Later {
         }
 
         /// Sets the value in the ImpureLazy.
-        def inject(x: a, l: ImpureLazy[ef, a]): Unit \ IO = {
+        def inject_(x: a, l: ImpureLazy[ef, a]): Unit \ IO = {
             let ImpureLazy(valRef) = l;
             valRef := Value.Done(x)
         }
         
         /// Creates an ImpureLazy from a constant.
-        pub def fromConstant(x: a): ImpureLazy[Pure, a] = {
-            ImpureLazy(unchecked_cast(ref Value.Done(x) @ Static as _ \ Pure))
+        pub def fromConstant(x: a): ImpureLazy[{}, a] = {
+            ImpureLazy(unchecked_cast(ref Value.Done(x) @ Static as _ \ {}))
         }
 
         /// Creates an ImpureLazy from a function.
         pub def fromFunction(f: Unit -> a \ ef): ImpureLazy[ef, a] = {
-            ImpureLazy(unchecked_cast(ref Value.Todo(f) @ Static as _ \ Pure))
+            ImpureLazy(unchecked_cast(ref Value.Todo(f) @ Static as _ \ {}))
         }
 
-        def internalGet(l: ImpureLazy[ef, a]): a \ IO = match extract(l) {
+        def internalGet(l: ImpureLazy[ef, a]): a \ IO + ef = match extract(l) {
             case Value.Todo(f) => 
                 let newVal = f();
-                inject(newVal, l);
+                inject_(newVal, l);
                 newVal
 
             case Value.Done(x) => x

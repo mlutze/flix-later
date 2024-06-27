@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v2.5.0
         with:
-          java-version: 17
+          java-version: 21
           distribution: zulu
       - uses: SebRollen/toml-action@v1.0.2
         id: read_flix_version
@@ -22,7 +22,7 @@ jobs:
           curl -L -f "$url" > flix.jar
 
           # run tests
-          java -jar flix.jar test --github-key ${{ github.token }}
+          java -jar flix.jar test --github-token ${{ github.token }}
 
           # Build the package
           java -jar flix.jar build-pkg

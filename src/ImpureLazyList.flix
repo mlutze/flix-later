@@ -98,7 +98,7 @@ mod Later {
             loop(Nil, n, l) |> List.reverse
         }
 
-        pub def fromList(l: List[a]): ImpureLazyList[Pure, a] = {
+        pub def fromList(l: List[a]): ImpureLazyList[{}, a] = {
             def getList() = match l {
                 case Nil => Node.ImpureNil
                 case Cons(hd, tl) => Node.ImpureCons(hd, fromList(tl))
